@@ -1,0 +1,6 @@
+[submodule "cometbft"]
+	path = cometbft
+	url = git@github.com:RyanW02/cometbft.git
+[submodule "cometbft-db"]
+	path = cometbft-db
+	url = git@github.com:RyanW02/cometbft-db.git

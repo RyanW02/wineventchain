@@ -1,0 +1,12 @@
+.idea
+*.iml
+.env
+.vscode
+/docker-volumes
+
+# Python Virtual Environment
+/bin/
+/lib64/
+/lib/
+/include/
+pyvenv.cfg

@@ -1,0 +1,12 @@
+go 1.21.3
+
+use (
+	./common
+	./wineventchain
+	./cometbft
+	./cometbft-db
+	./chain-client
+	./offchain-interface
+	./viewer
+	./benchmark
+)

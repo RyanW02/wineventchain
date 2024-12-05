@@ -1,0 +1,29 @@
+/*Define colour scheme*/
+:root {
+    --background: #FBFBFE;
+    --background-light: #2C2C2C;
+    --primary: #375FD4;
+    --secondary: #89A4F2;
+    --accent: #4371FC;
+    --text: #050315;
+    --text-gray: #202021;
+    --danger: #D64045;
+
+    --gap: 1vh;
+    --base-font-size: 1rem;
+}
+
+html {
+    overflow-x: hidden;
+}
+
+label {
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+a, a:focus, a:focus-visible, a:visited, a:active, a:hover {
+    color: var(--text);
+    text-decoration: none;
+    outline: none;
+}

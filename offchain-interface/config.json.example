@@ -1,0 +1,55 @@
+{
+  "production": false,
+  "pretty_logs": true,
+  "log_level": "info",
+  "server": {
+    "address": "0.0.0.0:8080"
+  },
+  "viewer_server": {
+    "enabled": true,
+    "address": "0.0.0.0:4000",
+    "jwt_algorithm": "HS256",
+    "jwt_secret": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "challenge_lifetime": "5m",
+    "search_page_limit": 50
+  },
+  "blockchain": {
+    "node_addresses": ["http://localhost:26657"],
+    "minimum_nodes": 0
+  },
+  "mongodb": {
+    "uri": "mongodb://root:root@localhost:27017",
+    "database_name": "offchain"
+  },
+  "transport": {
+    "node_name": "offchain-01",
+    "bind_address": "0.0.0.0",
+    "bind_port": 7946,
+    "network_type": "lan",
+    "retransmit_multiplier": 2,
+    "use_gossip": true,
+    "peers": ["localhost:7947", "localhost:7948"],
+    "use_encryption": true,
+    "shared_key": "AAAAAAAAAAAAAAAA"
+  },
+  "state": {
+    "path": "state.db"
+  },
+  "backfill": {
+    "try_unicast_first": true,
+    "block_poll_interval": "1m",
+    "block_fetch_chunk_size": 100,
+    "event_poll_interval": "1m",
+    "event_fetch_chunk_size": 50,
+    "event_new_event_ignore_threshold": "5m",
+    "event_retry_interval": "30m",
+    "event_max_retries": 48,
+    "multicast_backoff": "5s",
+    "unicast_backoff": "1s"
+  },
+  "event_retention": {
+    "run_at_startup": true,
+    "scan_interval": "1h",
+    "scan_timeout": "30m"
+  }
+}

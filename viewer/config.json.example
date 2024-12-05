@@ -1,0 +1,12 @@
+{
+  "production": true,
+  "pretty_logs": true,
+  "log_level": "info",
+  "frontend": {
+    "build_path": "./public/build",
+    "index_file": "index.html"
+  },
+  "server": {
+    "address": "0.0.0.0:3000"
+  }
+}

@@ -1,0 +1,6 @@
+/docker-volumes
+**/node_modules
+**/.svelte-kit
+viewer/public/build
+**/.env
+**/config.json

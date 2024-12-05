@@ -1,0 +1,71 @@
+dry_run = false
+retrieve_past_events = true
+
+[collector]
+channels = ["Application", "Security", "System"]
+state_db_path = "state.db"
+
+[blockchain]
+max_retry_queue_size = 500
+retry_intervals = ["1m", "5m", "15m", "30m", "1h", "3h", "6h", "1d", "3d"]
+check_interval = "1m"
+
+[[blockchain.nodes]]
+http_endpoint = "http://localhost:26657"
+ws_endpoint = "ws://localhost:26657/websocket"
+
+[[blockchain.nodes]]
+http_endpoint = "http://localhost:26655"
+ws_endpoint = "ws://localhost:26655/websocket"
+
+[[blockchain.nodes]]
+http_endpoint = "http://localhost:26653"
+ws_endpoint = "ws://localhost:26653/websocket"
+
+[blockchain.verification]
+health_check_timeout_seconds = 3
+verification_client_count = 3
+minimum_verification_client_count = 1
+allow_self_verification = true
+max_resubmits = 0
+
+[blockchain.verification.max_propagation_delay]
+secs = 20
+nanos = 0
+
+[blockchain.verification.propagation_retry_delay]
+secs = 2
+nanos = 0
+
+[off_chain]
+max_retry_queue_size = 500
+retry_intervals = ["1m", "5m", "15m", "30m", "1h", "3h", "6h", "1d", "3d"]
+check_interval = "1m"
+
+[[off_chain.nodes]]
+http_endpoint = "http://localhost:8080/"
+
+[[off_chain.nodes]]
+http_endpoint = "http://localhost:8081/"
+
+[[off_chain.nodes]]
+http_endpoint = "http://localhost:8081/"
+
+[off_chain.verification]
+health_check_timeout_seconds = 3
+verification_client_count = 3
+minimum_verification_client_count = 1
+allow_self_verification = true
+max_resubmits = 0
+
+[off_chain.verification.max_propagation_delay]
+secs = 20
+nanos = 0
+
+[off_chain.verification.propagation_retry_delay]
+secs = 2
+nanos = 0
+
+[principal]
+id = "user"
+private_key = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7aie8zrakLWKjqNAqbw1zZTIVdx3iQ6Y6wEihi1naKQ=="

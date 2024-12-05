@@ -1,0 +1,12 @@
+{
+  "state_store": {
+    "type": "disk",
+    "disk": {
+      "directory": "db"
+    },
+    "mongodb": {
+      "connection_string": "",
+      "db_name": ""
+    }
+  }
+}

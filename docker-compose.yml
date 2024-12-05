@@ -1,0 +1,248 @@
+version: '3.8'
+services:
+  viewer:
+    image: viewer # Local image
+    build:
+      context: .
+      dockerfile: ./viewer.Dockerfile
+    restart: always
+    environment:
+      PRODUCTION: "false"
+      PRETTY_LOGS: "true"
+      LOG_LEVEL: "info"
+      SERVER_ADDRESS: "0.0.0.0:3000"
+      FRONTEND_BUILD_PATH: "/srv/public"
+      FRONTEND_INDEX_FILE: "index.html"
+    ports:
+      - "3000:3000"
+  offchain-01:
+    image: offchain-interface # Local image
+    build:
+      context: .
+      dockerfile: ./offchain.Dockerfile
+    restart: always
+    volumes:
+      - 'offchain-01-data:/srv/data'
+    depends_on:
+      - 'offchain-01-mongodb'
+      - 'blockchain-01'
+      - 'blockchain-02'
+      - 'blockchain-03'
+      - 'blockchain-04'
+    environment:
+      PRODUCTION: "false"
+      PRETTY_LOGS: "true"
+      LOG_LEVEL: "info"
+      SERVER_ADDRESS: "0.0.0.0:8080"
+      VIEWER_SERVER_ENABLED: "true"
+      VIEWER_SERVER_ADDRESS: "0.0.0.0:4000"
+      VIEWER_SERVER_JWT_ALGORITHM: "HS256"
+      VIEWER_SERVER_JWT_SECRET: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      VIEWER_SERVER_CHALLENGE_LIFETIME: "5m"
+      VIEWER_SERVER_SEARCH_PAGE_LIMIT: "15"
+      BLOCKCHAIN_NODE_ADDRESSES: "http://blockchain-01:26657,http://blockchain-02:26657,http://blockchain-03:26657,http://blockchain-04:26657"
+      BLOCKCHAIN_MINIMUM_NODES: 3
+      MONGODB_URI: "mongodb://root:root@offchain-01-mongodb:27017"
+      MONGODB_DATABASE_NAME: "offchain"
+      STATE_PATH: "/srv/data/state.db"
+      TRANSPORT_NODE_NAME: "offchain-01"
+      TRANSPORT_BIND_ADDRESS: "0.0.0.0"
+      TRANSPORT_BIND_PORT: "7946"
+      TRANSPORT_NETWORK_TYPE: "local"
+      TRANSPORT_RETRANSMIT_MULTIPLIER: "6"
+      TRANSPORT_USE_GOSSIP: "true"
+      TRANSPORT_PEERS: "offchain-02:7946"
+      TRANSPORT_USE_ENCRYPTION: "true"
+      TRANSPORT_SHARED_KEY: "AAAAAAAAAAAAAAAA"
+      BACKFILL_TRY_UNICAST_FIRST: "true"
+      BACKFILL_BLOCK_POLL_INTERVAL: "1m"
+      BACKFILL_BLOCK_FETCH_CHUNK_SIZE: "100"
+      BACKFILL_EVENT_POLL_INTERVAL: "1m"
+      BACKFILL_EVENT_FETCH_CHUNK_SIZE: "50"
+      BACKFILL_EVENT_NEW_EVENT_IGNORE_THRESHOLD: "1m"
+      BACKFILL_EVENT_RETRY_INTERVAL: "30m"
+      BACKFILL_EVENT_MAX_RETRIES: "10"
+      BACKFILL_MULTICAST_BACKOFF: "5s"
+      EVENT_RETENTION_RUN_AT_STARTUP: "true"
+      EVENT_RETENTION_SCAN_INTERVAL: "15m"
+      EVENT_RETENTION_SCAN_TIMEOUT: "30m"
+    ports:
+      - "8080:8080"
+      - "4000:4000"
+  offchain-01-mongodb:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - 'offchain-01-mongodb:/data/db'
+  offchain-02:
+    image: offchain-interface # Local image
+    build:
+      context: .
+      dockerfile: ./offchain.Dockerfile
+    restart: always
+    volumes:
+      - 'offchain-02-data:/srv/data'
+    depends_on:
+      - 'offchain-02-mongodb'
+      - 'blockchain-01'
+      - 'blockchain-02'
+      - 'blockchain-03'
+      - 'blockchain-04'
+    environment:
+      PRODUCTION: "false"
+      PRETTY_LOGS: "true"
+      LOG_LEVEL: "info"
+      SERVER_ADDRESS: "0.0.0.0:8080"
+      VIEWER_SERVER_ENABLED: "true"
+      VIEWER_SERVER_ADDRESS: "0.0.0.0:4000"
+      VIEWER_SERVER_JWT_ALGORITHM: "HS256"
+      VIEWER_SERVER_JWT_SECRET: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      VIEWER_SERVER_CHALLENGE_LIFETIME: "5m"
+      VIEWER_SERVER_SEARCH_PAGE_LIMIT: "15"
+      BLOCKCHAIN_NODE_ADDRESSES: "http://blockchain-01:26657,http://blockchain-02:26657,http://blockchain-03:26657,http://blockchain-04:26657"
+      BLOCKCHAIN_MINIMUM_NODES: 3
+      MONGODB_URI: "mongodb://root:root@offchain-02-mongodb:27017"
+      MONGODB_DATABASE_NAME: "offchain"
+      STATE_PATH: "/srv/data/state.db"
+      TRANSPORT_NODE_NAME: "offchain-02"
+      TRANSPORT_BIND_ADDRESS: "0.0.0.0"
+      TRANSPORT_BIND_PORT: "7946"
+      TRANSPORT_NETWORK_TYPE: "local"
+      TRANSPORT_RETRANSMIT_MULTIPLIER: "6"
+      TRANSPORT_USE_GOSSIP: "true"
+      TRANSPORT_PEERS: "offchain-01:7946"
+      TRANSPORT_USE_ENCRYPTION: "true"
+      TRANSPORT_SHARED_KEY: "AAAAAAAAAAAAAAAA"
+      BACKFILL_TRY_UNICAST_FIRST: "true"
+      BACKFILL_BLOCK_POLL_INTERVAL: "1m"
+      BACKFILL_BLOCK_FETCH_CHUNK_SIZE: "100"
+      BACKFILL_EVENT_POLL_INTERVAL: "1m"
+      BACKFILL_EVENT_FETCH_CHUNK_SIZE: "50"
+      BACKFILL_EVENT_NEW_EVENT_IGNORE_THRESHOLD: "1m"
+      BACKFILL_EVENT_RETRY_INTERVAL: "30m"
+      BACKFILL_EVENT_MAX_RETRIES: "10"
+      BACKFILL_MULTICAST_BACKOFF: "5s"
+      EVENT_RETENTION_RUN_AT_STARTUP: "true"
+      EVENT_RETENTION_SCAN_INTERVAL: "15m"
+      EVENT_RETENTION_SCAN_TIMEOUT: "30m"
+    ports:
+      - "8081:8080"
+      - "4001:4000"
+  offchain-02-mongodb:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - 'offchain-02-mongodb:/data/db'
+  blockchain-01:
+    image: wineventchain # Local image
+    build:
+      context: .
+      dockerfile: ./blockchain.Dockerfile
+    restart: always
+    environment:
+      STATE_STORE_TYPE: mongodb
+      STATE_STORE_MONGODB_CONNECTION_STRING: mongodb://root:root@blockchain-01-mongodb:27017
+      STATE_STORE_MONGODB_DB_NAME: state
+    ports:
+      - "26646-26647:26656-26657"
+    volumes:
+      - '${PWD}/docker-volumes/blockchain-01/cometbft-data:/node/data'
+    depends_on:
+      - blockchain-01-mongodb
+  blockchain-01-mongodb:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - 'blockchain-01-mongodb:/data/db'
+  blockchain-02:
+    image: wineventchain # Local image
+    build:
+      context: .
+      dockerfile: ./blockchain.Dockerfile
+    restart: always
+    environment:
+      STATE_STORE_TYPE: mongodb
+      STATE_STORE_MONGODB_CONNECTION_STRING: mongodb://root:root@blockchain-02-mongodb:27017
+      STATE_STORE_MONGODB_DB_NAME: state
+    ports:
+      - "26648-26649:26656-26657"
+    volumes:
+      - '${PWD}/docker-volumes/blockchain-02/cometbft-data:/node/data'
+    depends_on:
+      - blockchain-02-mongodb
+  blockchain-02-mongodb:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - 'blockchain-02-mongodb:/data/db'
+  blockchain-03:
+    image: wineventchain # Local image
+    build:
+      context: .
+      dockerfile: ./blockchain.Dockerfile
+    restart: always
+    environment:
+      STATE_STORE_TYPE: mongodb
+      STATE_STORE_MONGODB_CONNECTION_STRING: mongodb://root:root@blockchain-03-mongodb:27017
+      STATE_STORE_MONGODB_DB_NAME: state
+    ports:
+      - "26650-26651:26656-26657"
+    volumes:
+      - '${PWD}/docker-volumes/blockchain-03/cometbft-data:/node/data'
+    depends_on:
+      - blockchain-03-mongodb
+  blockchain-03-mongodb:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - 'blockchain-03-mongodb:/data/db'
+  blockchain-04:
+    image: wineventchain # Local image
+    build:
+      context: .
+      dockerfile: ./blockchain.Dockerfile
+    restart: always
+    environment:
+      STATE_STORE_TYPE: mongodb
+      STATE_STORE_MONGODB_CONNECTION_STRING: mongodb://root:root@blockchain-04-mongodb:27017
+      STATE_STORE_MONGODB_DB_NAME: state
+    ports:
+      - "26652-26653:26656-26657"
+    volumes:
+      - '${PWD}/docker-volumes/blockchain-04/cometbft-data:/node/data'
+    depends_on:
+      - blockchain-04-mongodb
+  blockchain-04-mongodb:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - 'blockchain-04-mongodb:/data/db'
+
+volumes:
+  offchain-01-data:
+  offchain-02-data:
+  offchain-01-mongodb:
+  offchain-02-mongodb:
+  blockchain-01-mongodb:
+  blockchain-02-mongodb:
+  blockchain-03-mongodb:
+  blockchain-04-mongodb:
+
